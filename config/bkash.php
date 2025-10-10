@@ -1,18 +1,10 @@
 <?php
+
 return [
-    'mode' => env('BKASH_MODE', 'sandbox'), // sandbox or live
-    'sandbox' => [
-        'base_url' => 'https://sandbox.bka.sh/v1.2.0-beta',
-        'username' => env('BKASH_SANDBOX_USERNAME'),
-        'password' => env('BKASH_SANDBOX_PASSWORD'),
-        'app_key' => env('BKASH_SANDBOX_APP_KEY'),
-        'app_secret' => env('BKASH_SANDBOX_APP_SECRET'),
-    ],
-    'live' => [
-        'base_url' => 'https://checkout.pay.bka.sh/v1.2.0-beta',
-        'username' => env('BKASH_LIVE_USERNAME'),
-        'password' => env('BKASH_LIVE_PASSWORD'),
-        'app_key' => env('BKASH_LIVE_APP_KEY'),
-        'app_secret' => env('BKASH_LIVE_APP_SECRET'),
-    ],
+    'base_url' => env('BKASH_BASE_URL', 'https://tokenized.sandbox.bka.sh/v1.2.0-beta'),
+    'app_key' => env('BKASH_APP_KEY'),
+    'app_secret' => env('BKASH_APP_SECRET'),
+    'username' => env('BKASH_USERNAME'),
+    'password' => env('BKASH_PASSWORD'),
+    'mode' => env('BKASH_MODE', 'sandbox'),
 ];

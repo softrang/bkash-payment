@@ -20,11 +20,14 @@
       "Softrang\\BkashPayment\\": "src/"
     }
   },
-  "extra": {
+ "extra": {
     "laravel": {
-      "providers": [
-        "Softrang\\BkashPayment\\BkashPaymentServiceProvider"
-      ]
+        "providers": [
+            "Softrang\\BkashPayment\\BkashServiceProvider"
+        ],
+        "aliases": {
+            "Bkash": "Softrang\\BkashPayment\\Facades\\Bkash"
+        }
     }
-  }
+}
 }
