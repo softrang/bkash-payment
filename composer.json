@@ -1,0 +1,23 @@
+{
+  "name": "softrang/bkash-payment",
+  "description": "bKash payment gateway integration for Laravel",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Softrang\\BkashPayment\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "guzzlehttp/guzzle": "^7.0",
+    "illuminate/support": "^10.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Softrang\\BkashPayment\\BkashPaymentServiceProvider"
+      ]
+    }
+  }
+}
