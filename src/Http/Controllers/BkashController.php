@@ -1,8 +1,9 @@
 <?php
+
 namespace Softrang\BkashPayment\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Softrang\BkashPayment\BkashPayment;
 
 class BkashController extends Controller
@@ -14,42 +15,38 @@ class BkashController extends Controller
         $this->bkash = $bkash;
     }
 
+    public function index()
+    {
+        return view('bkash::bkash.index');
+    }
+
     public function pay(Request $request)
     {
-        $amount = $request->amount;
+        $amount = $request->input('amount', 100);
         $invoice = 'INV_' . uniqid();
-        $callbackURL = route('bkash.callback');
 
-        $response = $this->bkash->createPayment($amount, $invoice, $callbackURL);
+        $response = $this->bkash->createPayment($amount, $invoice);
 
-        if (!empty($response['bkashURL'])) {
+        if (isset($response['bkashURL'])) {
             return redirect()->away($response['bkashURL']);
         }
 
-        return response()->json(['error' => 'Failed to connect to bKash', 'details' => $response]);
+        return back()->with('error', 'Failed to connect to bKash API.');
     }
 
-    public function callback(Request $request)
+    public function success(Request $request)
     {
-        if ($request->has('paymentID')) {
-            $payment = $this->bkash->executePayment($request->paymentID);
+        $response = $this->bkash->executePayment($request->paymentID);
 
-            if (!empty($payment['transactionStatus']) && $payment['transactionStatus'] === 'Completed') {
-                // ✅ Successful payment
-                // You can update your order here
-                return response()->json([
-                    'status' => 'success',
-                    'payment' => $payment
-                ]);
-            } else {
-                // ❌ Payment failed
-                return response()->json([
-                    'status' => 'failed',
-                    'payment' => $payment
-                ]);
-            }
+        if (isset($response['transactionStatus']) && $response['transactionStatus'] === 'Completed') {
+            return view('bkash::bkash.success', ['trx' => $response]);
         }
 
-        return response()->json(['status' => 'cancelled']);
+        return view('bkash::bkash.fail', ['trx' => $response]);
+    }
+
+    public function cancel()
+    {
+        return view('bkash::bkash.cancel');
     }
 }

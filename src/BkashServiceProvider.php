@@ -8,22 +8,30 @@ class BkashServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        // ✅ Allow config publishing
+        // ✅ Load routes
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+
+        // ✅ Load views
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'bkash');
+
+        // ✅ Publish config + views
         $this->publishes([
             __DIR__ . '/../config/bkash.php' => config_path('bkash.php'),
         ], 'bkash-config');
+
+        $this->publishes([
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/bkash'),
+        ], 'bkash-views');
     }
 
     public function register()
     {
-        // Merge package config
         $this->mergeConfigFrom(
             __DIR__ . '/../config/bkash.php',
             'bkash'
         );
 
-        // Bind main class
-        $this->app->singleton('bkash', function ($app) {
+        $this->app->singleton('bkash', function () {
             return new BkashPayment();
         });
     }
