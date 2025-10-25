@@ -13,6 +13,7 @@ class BkashClient
     private string $password;
     private string $appKey;
     private string $appSecret;
+     private string $callbackUrl;
 
     public function __construct()
     {
@@ -24,9 +25,10 @@ class BkashClient
         $this->password = config('bkash.password');
         $this->appKey = config('bkash.app_key');
         $this->appSecret = config('bkash.app_secret');
+        $this->callbackUrl = config('bkash.callback_url');
     }
 
-    /** 🔑 Get Access Token */
+
     private function grantToken(): string
     {
         $response = Http::withHeaders([
@@ -41,7 +43,7 @@ class BkashClient
         return $response->json('id_token');
     }
 
-    /** 🧾 Auth Header */
+   
     private function headers(): array
     {
         return [
@@ -51,13 +53,13 @@ class BkashClient
         ];
     }
 
-    /** 💰 Create Payment */
+  
     public function createPayment(array $data): array
     {
         $payload = [
             'mode' => '0011',
             'payerReference' => $data['payerReference'] ?? '1',
-            'callbackURL' => URL::to('/bkash/callback'),
+            'callbackURL' => $this->callbackUrl,
             'amount' => $data['amount'],
             'currency' => 'BDT',
             'intent' => 'sale',
@@ -70,7 +72,7 @@ class BkashClient
         return $response->json();
     }
 
-    /** ✅ Execute Payment */
+   
     public function executePayment(string $paymentID): array
     {
         $response = Http::withHeaders($this->headers())
@@ -81,7 +83,7 @@ class BkashClient
         return $response->json();
     }
 
-    /** 🔍 Query Payment */
+  
     public function queryPayment(string $paymentID): array
     {
         $response = Http::withHeaders($this->headers())
@@ -92,7 +94,7 @@ class BkashClient
         return $response->json();
     }
 
-    /** 💸 Refund */
+   
     public function refund(string $paymentID, string $trxID, float $amount, string $reason = 'Refund requested'): array
     {
         $payload = [
@@ -109,7 +111,7 @@ class BkashClient
         return $response->json();
     }
 
-    /** 🔎 Search Transaction */
+   
     public function search(string $trxID): array
     {
         $response = Http::withHeaders($this->headers())
